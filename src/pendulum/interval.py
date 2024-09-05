@@ -28,7 +28,35 @@ if TYPE_CHECKING:
 
 class Interval(Duration):
     """
-    An interval of time between two datetimes.
+    Represents a time interval between two dates or times, providing methods to
+    calculate duration, range, and properties like years, months, weeks, days,
+    hours, minutes, and seconds. It supports arithmetic operations and comparisons
+    with other intervals or durations.
+
+    Attributes:
+        __radd__ (self__class__): A dunder method that supports right addition
+            operation with the Interval object on the left side, i.e., `a = b +
+            interval`. It calls the `__add__` method.
+        __rmul__ (call|None): Implemented as an alias for `__mul__`. This allows
+            the `Interval` object to be used on either side of a multiplication
+            operation, making it more versatile in its usage.
+        __div__ (timedelta|float|int): Implemented as an overload of the division
+            operator `__floordiv__`. It divides the interval by a given value,
+            either another timedelta or a number.
+        _invert (bool): Set to False by default. If the start time is later than
+            the end time, it becomes True indicating that the interval has been
+            inverted for calculation purposes.
+        _absolute (bool): Used to indicate whether the interval's start and end
+            are swapped if they are initially out of order. It defaults to False.
+        _start (pendulumDateTime|pendulumDate|datetime|date): A representation of
+            the start date or time of the interval. It can be either a pendulum
+            datetime, pendulum date, datetime or date object.
+        _end (pendulumDateTime|pendulumDate|datetime|date): Accessed through
+            property end. It represents the end point of the interval.
+        _delta (PreciseDiff): Calculated using the `precise_diff()` function from
+            the 'pendulum' library. It represents the difference between the start
+            and end dates of the interval.
+
     """
 
     @overload
@@ -38,6 +66,28 @@ class Interval(Duration):
         end: pendulum.DateTime | datetime,
         absolute: bool = False,
     ) -> Self:
+        """
+        Initializes new instances of the class, specifying the start and end points
+        of a time interval with an optional absolute flag indicating whether to
+        interpret the values as absolute or relative times.
+
+        Args:
+            start (pendulum.DateTime | datetime*): Required for creating an instance.
+                The value can be either a pendulum DateTime object or a Python
+                datetime object.
+            end (pendulum.DateTime | datetime*): Required for its use. It represents
+                an end date or time, which may be used to calculate durations or
+                define intervals. The absolute parameter can optionally be specified.
+            absolute (bool*): Initially set to False*. It is likely used to specify
+                whether time intervals should be considered absolute or relative,
+                affecting how they are interpreted by the class.
+
+        Returns:
+            Self*: An instance of the class cls. The returned object represents a
+            time period between start and end dates, with optional absolute parameter
+            for specifying the duration as an absolute time interval.
+
+        """
         ...
 
     @overload
